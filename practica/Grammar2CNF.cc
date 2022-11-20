@@ -21,21 +21,12 @@
 
 
 
-// ./p06_automata_simulator input.fa input.txt
+// ./Grammar2CNF input.gra input.gra
 
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "DFA.h"
 #include "Gramatica.h"
-
-// Modificación clase:
-// recibir una subcadena y alfabeto
-// aba
-// a,b
-
-// S-> abaX
-// X-> aX | bX
 
 
 void Usage(int argc, char* argv[]);
@@ -50,19 +41,11 @@ int main(int argc, char* argv[]) {
   std::ifstream lectura(teclado);
   std::ofstream escritura(teclado2);
 
-  //std::cout << "FA: " << teclado << " :: Cadenas: " << teclado2 << std::endl;
+  Gramatica gramatica (lectura);
 
-  DFA dfa(lectura);
+  Gramatica gramatica_FNC = gramatica.ConvertidorFNChomsky();
 
-  Cadena cadena_entrante;
-  Alfabeto alfabeto_entrante;
-  alfabeto_entrante.Insertar("a");
-  alfabeto_entrante.Insertar("b");
-  cadena_entrante.Insertar("aba");
-
-  Gramatica gramatica = dfa.Gramatica_Modificacion(cadena_entrante, alfabeto_entrante);
-
-  std::cout << gramatica << std::endl;
+  escritura << gramatica_FNC;
   
 
   return 0;
@@ -76,12 +59,12 @@ void Usage(int argc, char* argv[]) {
     if(argc == 2) {
       std::string parameter{argv[1]};
       if(parameter == "--help") { 
-        std::cout << "El programa rellenará un documento de texto de salida con los resultados de la operación seleccionada" << std::endl;
+        std::cout << "El programa rellenará un documento de texto de salida con la gramática en FNC" << std::endl;
         exit(EXIT_SUCCESS);
       }
     }
-    std::cout << "./p06_automata_simulator - Simulación de Autómatas Finitos" << std::endl << "Modo de uso: ./p06_automata_simulator input.fa input.txt" << std::endl;
-    std::cout << "Pruebe ./p06_automata_simulator --help para más información"<< std::endl;
+    std::cout << "./Grammar2CNF - Gramáticas en Forma Normal de Chomsky" << std::endl << "Modo de uso: ./Grammar2CNF input.gra output.gra" << std::endl;
+    std::cout << "Pruebe ./Grammar2CNF --help para más información"<< std::endl;
     exit(EXIT_SUCCESS);
   }
 }

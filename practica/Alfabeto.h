@@ -44,8 +44,10 @@ class Alfabeto{
         // Alfabeto operator|(Alfabeto &alfabeto_entrante); // Unión
         // Alfabeto operator^(Alfabeto &alfabeto_entrante); // Intersección
         // Alfabeto operator-(Alfabeto &alfabeto_entrante); // Diferencia
+        int Dimension () {return Alfabeto_.size();}
 
         bool Buscar (std::string elemento);
+        bool Buscar (Simbolo elemento);
 
         std::set<Simbolo> ContenidoAlfabeto() {return Alfabeto_;}
 

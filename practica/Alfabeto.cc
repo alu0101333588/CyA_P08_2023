@@ -44,6 +44,20 @@ bool Alfabeto::Buscar (std::string elemento) {
     return false;
 }
 
+bool Alfabeto::Buscar (Simbolo elemento) {
+
+    for (auto i : Alfabeto_) {
+        if (i == elemento) { // i.Obtener()
+            return true;
+        }
+    }
+
+    if (elemento == "&") {
+        return true;
+    }
+    return false;
+}
+
 void Alfabeto::Insertar (Simbolo &simbolo) {
     Alfabeto_.insert(simbolo);
 }
@@ -94,11 +108,11 @@ void Alfabeto::operator() (std::string linea) {
 }*/
 
 std::ostream& operator<<(std::ostream &salida, Alfabeto &alfabeto) {
-    salida << "{ ";
+    //salida << "{ ";
     for (auto i : alfabeto.Alfabeto_) {
-        salida << i << " ";
+        salida << i << std::endl;
     }
-    salida << "}";
+    //salida << "}";
     return salida;
 }
 

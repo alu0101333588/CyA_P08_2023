@@ -24,29 +24,38 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "DFA.h"
+#include "Simbolo.h"
+#include "Alfabeto.h"
 
 class Gramatica {
     private:
-        std::set<Simbolo> Terminales_;
+        Alfabeto Terminales_;
         //std::vector<std::vector<std::string>> No_terminales_;
-        std::map<std::string, std::string> No_terminales_;
-        std::string Simbolo_arranque = "S";
-        std::map<std::string, std::vector<std::string>> Producciones_;
+        std::set<Simbolo> No_Terminales_;
+        Simbolo Simbolo_arranque_;
+        std::map<Simbolo, std::vector<std::string>> Producciones_;
 
     public:
+        Gramatica (std::istream &archivo_lectura);
         Gramatica () {}
 
-        void InsertarTerminal(Simbolo terminal) {Terminales_.insert(terminal);}
-        void InsertarNoTerminal(std::string no_terminal, std::string estado) {No_terminales_[no_terminal] = estado;}
-        void InsertarProduccion(std::string no_terminal, std::string produccion) {Producciones_[no_terminal].push_back(produccion);}
+        void InsertarTerminal(Simbolo terminal) {Terminales_.Insertar(terminal);}
+        void InsertarNoTerminal(Simbolo no_terminal) {No_Terminales_.insert(no_terminal);}
+        void InsertarProduccion(Simbolo no_terminal, std::string produccion) {Producciones_[no_terminal].push_back(produccion);}
+        
+        int NumeroNoTerminales () {return No_Terminales_.size();}
+        int NumeroTerminales () {return Terminales_.Dimension();}
+        int NumeroProducciones();
 
-        int NumeroNoTerminales () {return No_terminales_.size();}
 
-        std::string SimboloArranque () {return Simbolo_arranque;}
+        Simbolo SimboloArranque () {return Simbolo_arranque_;}
 
-        std::string No_Terminal (std::string nombre);
+        bool BuscarNoTerminal(Simbolo no_terminal);
+        bool BuscarTerminal(Simbolo no_terminal) {return Terminales_.Buscar(no_terminal);}
 
+        bool ComprobacionesVaciasUnitarias ();
+
+        Gramatica ConvertidorFNChomsky();
 
         friend std::ostream& operator<< (std::ostream &salida, Gramatica &gramatica);
         

@@ -8,7 +8,7 @@
 
 
 # The name of the target program
-TARGET  = dfa2grammar
+TARGET  = Grammar2CNF
 
 # Select Compiler and flags
 CC=g++
@@ -24,22 +24,13 @@ INCLUDE = -I.
 # Special libraries (none for now)
 LIB =
 
-$(TARGET): dfa2grammar.o Cadena.o Alfabeto.o Simbolo.o DFA.o Estado.o Gramatica.o
+$(TARGET): Grammar2CNF.o Alfabeto.o Simbolo.o Gramatica.o
 	$(CC) -o $@ $^ $(LIB)
 
-dfa2grammar.o: dfa2grammar.cc
-	$(CC) $(CFLAGS) $(INCLUDE) -c $<
-
-Cadena.o: Cadena.cc Cadena.h
-	$(CC) $(CFLAGS) $(INCLUDE) -c $<
-
-Estado.o: Estado.cc Estado.h 
+Grammar2CNF.o: Grammar2CNF.cc
 	$(CC) $(CFLAGS) $(INCLUDE) -c $<
 
 Simbolo.o: Simbolo.cc Simbolo.h
-	$(CC) $(CFLAGS) $(INCLUDE) -c $<
-
-DFA.o: DFA.cc DFA.h
 	$(CC) $(CFLAGS) $(INCLUDE) -c $<
 
 Alfabeto.o: Alfabeto.cc Alfabeto.h
