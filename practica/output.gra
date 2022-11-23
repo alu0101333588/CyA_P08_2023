@@ -1,0 +1,25 @@
+3
+a
+b
+c
+9
+C(a)
+C(b)
+D(1)
+D(2)
+E(1)
+F(1)
+S
+X
+Y
+S
+19
+C(a) -> a
+C(b) -> b
+D(1) -> XD(2)
+D(2) -> C(b)X
+E(1) -> C(b)X
+F(1) -> XC(b)
+S -> C(a)D(1) | C(a)E(1) | C(a)F(1) | C(a)C(b)
+X -> C(a)Y | C(b)Y | a | b
+Y -> C(a)Y | C(b)Y | a | b | c

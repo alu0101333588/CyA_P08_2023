@@ -279,52 +279,46 @@ Gramatica Gramatica::ConvertidorFNChomsky() {
     gramatica_resulante.No_Terminales_ = gramatica_primera_fase.No_Terminales_;
     gramatica_resulante.Simbolo_arranque_ = gramatica_primera_fase.Simbolo_arranque_;
 
-    bool control_bucle = true;
-    int contador_prueba = 0;
 
-    while (control_bucle != false) {
-
-        bool control_fase2 = false;
-
-        for (it = gramatica_primera_fase.Producciones_.begin(); it != gramatica_primera_fase.Producciones_.end(); it++) { // SEGUNDA PARTE
-            std::cout << "RECORRIDO" << std::endl;
-            int numero_producciones = 0;
-            numero_producciones = gramatica_primera_fase.Producciones_[it->first].size();
-            int contador = 0;
-            Simbolo simbolo_prueba = it->first;
-            //std::cout << "CONTENIDO: " << simbolo_prueba << " :: " << numero_producciones << std::endl;
+    for (it = gramatica_primera_fase.Producciones_.begin(); it != gramatica_primera_fase.Producciones_.end(); it++) { // SEGUNDA PARTE
+        int numero_producciones = 0;
+        numero_producciones = gramatica_primera_fase.Producciones_[it->first].size();
+        int contador = 0;
 
 
-            for (int i = 0; i < numero_producciones; i++) {
-                contador++;
-                std::string contenido_produccion_final;
-                Simbolo simbolo_auxiliar = it->first;
-                std::string contenido_produccion = it->second[i];
-                Simbolo simbolo_contenido(contenido_produccion);
-                int dimension_contenido_produccion = 0;
-                dimension_contenido_produccion = contenido_produccion.length();
-                std::string contenido;
-                int contador_no_terminales = 0;
+        for (int i = 0; i < numero_producciones; i++) {
+            std::string contenido_produccion_final;
+            Simbolo simbolo_auxiliar = it->first;
+            std::string contenido_produccion = it->second[i];
+            Simbolo simbolo_contenido(contenido_produccion);
+            int dimension_contenido_produccion = 0;
+            dimension_contenido_produccion = contenido_produccion.length();
+            std::string contenido;
+            int contador_no_terminales = 0;
 
-                for (int k = 0; k < dimension_contenido_produccion; k++) {
-                    contenido += contenido_produccion[k];
-                    Simbolo no_terminal_a_buscar(contenido);
-                    if (gramatica_primera_fase.BuscarNoTerminal(no_terminal_a_buscar)) {
-                        contador_no_terminales++;
-                        contenido.resize(0);
-                    }
+            for (int k = 0; k < dimension_contenido_produccion; k++) {
+                contenido += contenido_produccion[k];
+                Simbolo no_terminal_a_buscar(contenido);
+                if (gramatica_primera_fase.BuscarNoTerminal(no_terminal_a_buscar)) {
+                    contador_no_terminales++;
+                    contenido.resize(0);
                 }
+            }
                 
 
-                if (contador_no_terminales >= 3) {
-                    std::cout << "ENTRÉ " << contador_no_terminales << " :: " << contenido_produccion << std::endl;
-                    control_fase2 = true;
+            if (contador_no_terminales >= 3) {
+
+                std::string contenido_produccion_aux = contenido_produccion;
+                int dimension_contenido_produccion_aux = dimension_contenido_produccion;
+                Simbolo simbolo_aux = simbolo_auxiliar;
+                while (contador_no_terminales >= 3) {
+                    contador++;
+
                     std::string cont_produc;
                     int contador_referencia = 0;
-                    cont_produc.resize(0);
 
-                    for (int k = 0; k < dimension_contenido_produccion; k++) {
-                        cont_produc += contenido_produccion[k];
+                    for (int k = 0; k < dimension_contenido_produccion_aux; k++) { // Posición primer no terminal
+                        cont_produc += contenido_produccion_aux[k];
                         Simbolo no_terminal_a_buscar(cont_produc);
                         if (gramatica_primera_fase.BuscarNoTerminal(no_terminal_a_buscar)) {
                             contador_referencia = k+1;
@@ -334,50 +328,59 @@ Gramatica Gramatica::ConvertidorFNChomsky() {
 
                     cont_produc.resize(0);
 
-                    for (int k = contador_referencia; k < dimension_contenido_produccion; k++) { 
-                        cont_produc += contenido_produccion[k];
+                    for (int k = contador_referencia; k < dimension_contenido_produccion_aux; k++) { // Contenido resto de no terminales
+                        cont_produc += contenido_produccion_aux[k];
                     }
+
                     std::string nombre_no_terminal; // LA SEGUNDA PARTE DE LA PRODUCCIÓN
                     nombre_no_terminal += letra;
                     nombre_no_terminal += "(";
-
                     nombre_no_terminal += std::to_string(contador);
                     nombre_no_terminal += ")";
                     Simbolo no_terminal(nombre_no_terminal);
 
-                    gramatica_primera_fase.InsertarProduccion(no_terminal, cont_produc);
-                    gramatica_primera_fase.InsertarNoTerminal(no_terminal);
-
-                //gramatica_resulante.InsertarProduccion(no_terminal, cont_produc);
-                //gramatica_resulante.InsertarNoTerminal(no_terminal);    
- 
                     std::string contenido_produccion_auxiliar; // LA PRIMERA PARTE DE LA PRODUCCIÓN
                     for (int k = 0; k < contador_referencia; k++) { 
-                        contenido_produccion_auxiliar += contenido_produccion[k];
+                        contenido_produccion_auxiliar += contenido_produccion_aux[k];
                     }
-                //contenido_produccion_auxiliar += contenido_produccion[0];
                     contenido_produccion_auxiliar += nombre_no_terminal;
                 
-                    gramatica_resulante.InsertarProduccion(simbolo_auxiliar, contenido_produccion_auxiliar);
-                //std::cout << letra << ".INSERTA: " << no_terminal << " :: " << cont_produc << " || " << simbolo_auxiliar << " :: " << contenido_produccion_auxiliar << std::endl;           
-                } else {
-                    contador_prueba++;
-                    if (!gramatica_resulante.BuscarNoTerminal(simbolo_auxiliar)) {
-                    //gramatica_primera_fase.InsertarProduccion(no_terminal, cont_produc);
-                        gramatica_resulante.InsertarNoTerminal(simbolo_auxiliar);
-                    }
-                    gramatica_resulante.InsertarProduccion(simbolo_auxiliar, contenido_produccion);
-                //std::cout << "DEF: " << simbolo_auxiliar << " :: " << contenido_produccion << std::endl;
-                }
-            
-            }
-            gramatica_primera_fase.Producciones_.erase(simbolo_prueba);
-            letra++;  
-        }
+                    gramatica_resulante.InsertarProduccion(simbolo_aux, contenido_produccion_auxiliar);
+                    gramatica_resulante.InsertarNoTerminal(simbolo_aux);
 
-        if (control_fase2 == false) {
-            control_bucle = false;
-        }
+                    contenido_produccion_aux = cont_produc;
+                    dimension_contenido_produccion_aux = cont_produc.size();
+                    contenido.resize(0);
+                    int contador_no_terminales_aux = 0;
+
+                    for (int k = 0; k < dimension_contenido_produccion_aux; k++) {
+                        contenido += contenido_produccion_aux[k];
+                        Simbolo no_terminal_a_buscar(contenido);
+                        if (gramatica_primera_fase.BuscarNoTerminal(no_terminal_a_buscar)) {
+                            contador_no_terminales_aux++;
+                            contenido.resize(0);
+                        }
+                    }
+                    contador_no_terminales = contador_no_terminales_aux;    
+                    simbolo_aux.Asignar(nombre_no_terminal);
+
+                    if (contador_no_terminales < 3) {
+                        gramatica_resulante.InsertarProduccion(nombre_no_terminal, cont_produc);
+                        gramatica_resulante.InsertarNoTerminal(nombre_no_terminal);
+                    }
+
+                }
+                letra++; 
+                contador = 0;
+
+            } else {
+                if (!gramatica_resulante.BuscarNoTerminal(simbolo_auxiliar)) {
+                    gramatica_resulante.InsertarNoTerminal(simbolo_auxiliar);
+                }
+                gramatica_resulante.InsertarProduccion(simbolo_auxiliar, contenido_produccion);
+            }
+            
+        } 
     }
 
     return gramatica_resulante;
