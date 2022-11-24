@@ -23,6 +23,10 @@
 
 // ./Grammar2CNF input.gra input.gra
 
+// Modificación clase
+// pasamos primero input2.gra sacamos output.gra
+// pasamos output.gra y sacamos output2.gra
+
 #include <iostream>
 #include <fstream>
 #include <string>

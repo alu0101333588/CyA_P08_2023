@@ -56,15 +56,15 @@ std::ostream& operator<< (std::ostream &salida, Gramatica &gramatica) {
         numero_producciones = gramatica.Producciones_[it_aux->first].size();
         //std::cout << "numero_producciones: " << numero_producciones << std::endl;
         Simbolo simbolo_auxiliar = it_aux->first;
-        salida << simbolo_auxiliar << " -> ";
+        //salida << simbolo_auxiliar << " -> ";
         for (int i = 0; i < numero_producciones; i++) {
             
-            //salida << simbolo_auxiliar << " -> " << it_aux->second[i] << std::endl;
-            if (i == numero_producciones-1) {
+            salida << simbolo_auxiliar << " -> " << it_aux->second[i] << std::endl;
+            /*if (i == numero_producciones-1) {
                 salida << it_aux->second[i] <<  std::endl;
             } else {
                 salida << it_aux->second[i] <<  " | ";
-            }
+            }*/
             
         }
     }
@@ -197,10 +197,10 @@ Gramatica::Gramatica (std::istream &archivo_lectura) {
             elemento_verificar += linea[k];
             Simbolo simbolo_verificar(elemento_verificar);
 
-            if ((!BuscarNoTerminal(simbolo_verificar)) && (!BuscarTerminal(simbolo_verificar))) {
-                std::cerr << "ERROR. Se ha introducido un símbolo que no es no terminal ni terminal (" << linea << ")" << std::endl;
-                exit(EXIT_FAILURE);    
-            }
+            /*if (BuscarNoTerminal(simbolo_verificar) || BuscarTerminal(simbolo_verificar)) {
+                //std::cerr << "ERROR. Se ha introducido un símbolo que no es no terminal ni terminal (" << linea << ")" << std::endl;
+                //exit(EXIT_FAILURE);    
+            }*/
 
             contenido_produccion += linea[k];
             k++;
@@ -236,6 +236,8 @@ Gramatica Gramatica::ConvertidorFNChomsky() {
 
     std::map<Simbolo, std::vector<std::string>>::iterator it;
 
+    char letra = 'D';
+
     for (it = Producciones_.begin(); it != Producciones_.end(); it++) { // PRIMERA PARTE
         
         int numero_producciones = 0;
@@ -252,11 +254,13 @@ Gramatica Gramatica::ConvertidorFNChomsky() {
                 std::string cont_produc;
                 cont_produc += contenido_produccion[k];
 
-                if (BuscarTerminal(cont_produc) && (dimension_contenido_produccion != 1)) {
-                    
+                if (BuscarTerminal(cont_produc) && (dimension_contenido_produccion != 1) && (contenido_produccion[0] != 'C')) {
+
                     std::string nombre_no_terminal = "C(";
+                    //nombre_no_terminal += letra;
                     nombre_no_terminal += cont_produc;
                     nombre_no_terminal += ")";
+                    //letra++;
                     Simbolo no_terminal(nombre_no_terminal);
                     if (!gramatica_primera_fase.BuscarNoTerminal(no_terminal)) {
                         gramatica_primera_fase.InsertarProduccion(no_terminal, cont_produc);
@@ -273,7 +277,7 @@ Gramatica Gramatica::ConvertidorFNChomsky() {
     }
 
     Gramatica gramatica_resulante; 
-    char letra = 'D';
+    //char letra = 'D';
 
     gramatica_resulante.Terminales_ = gramatica_primera_fase.Terminales_;
     gramatica_resulante.No_Terminales_ = gramatica_primera_fase.No_Terminales_;
@@ -334,9 +338,10 @@ Gramatica Gramatica::ConvertidorFNChomsky() {
 
                     std::string nombre_no_terminal; // LA SEGUNDA PARTE DE LA PRODUCCIÓN
                     nombre_no_terminal += letra;
-                    nombre_no_terminal += "(";
-                    nombre_no_terminal += std::to_string(contador);
-                    nombre_no_terminal += ")";
+                    //nombre_no_terminal += "(";
+                    //nombre_no_terminal += std::to_string(contador);
+                    //nombre_no_terminal += ")";
+                    letra++;
                     Simbolo no_terminal(nombre_no_terminal);
 
                     std::string contenido_produccion_auxiliar; // LA PRIMERA PARTE DE LA PRODUCCIÓN
@@ -370,7 +375,7 @@ Gramatica Gramatica::ConvertidorFNChomsky() {
                     }
 
                 }
-                letra++; 
+                //letra++; 
                 contador = 0;
 
             } else {
